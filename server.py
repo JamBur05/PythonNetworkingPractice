@@ -19,17 +19,20 @@ def handle_client(conn, addr):
     while connected:
         # Waiting for message from client
         msg_length = conn.recv(HEADER).decode(FORMAT)
-        msg_length = int(msg_length)
-        msg = conn.recv(msg_length).decode(FORMAT)
+        if msg_length: 
+            msg_length = int(msg_length)
+            msg = conn.recv(msg_length).decode(FORMAT)
 
-        if msg == DISCONNECT_MESSAGE:
-            connected = False
+            if msg == DISCONNECT_MESSAGE:
+                connected = False
 
-        print(f"[{addr}] {msg}")
+            print(f"[{addr}] {msg}")
+            conn.send("Message received!".encode(FORMAT))
     conn.close()
 
 def start():
     server.listen()
+    print(f"[LISTENTING] Server is listenting on {SERVER}")
     while True:
         # Store Connection object (conn), Get Address from conection (addr) 
         conn, addr = server.accept()
